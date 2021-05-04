@@ -1,3 +1,3 @@
 # vkm_bot
 
-Murojaat uchun: t.me?TILON
+Murojaat uchun: t.me/TILON
