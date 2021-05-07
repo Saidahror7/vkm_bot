@@ -5,20 +5,18 @@ from aiogram.utils.markdown import hbold, quote_html
 
 from app.functions.functions import split_list, Playlists
 from app.misc import dp
-from app.models.Musics import Musics
 
 
 @dp.callback_query_handler(text_startswith=['playlist_next', 'playlist_prev'])
 async def __search_music(query: CallbackQuery):
-    music = Musics(query.message.reply_to_message.text.lower())
     now_page = query.data.replace('playlist_next', '') if query.data.startswith(
         'playlist_next') else query.data.replace('playlist_prev', '')
     prev_page = int(now_page) - 1
     next_page = int(now_page) + 1
-    playlist = Playlists(query.from_user.id).lists(now_page)
-
-    if len(playlist) > 0:
-        result_count = int(music.All_Music())
+    _playlist = Playlists(query.from_user.id)
+    playlist_count = _playlist.lists_count()
+    if playlist_count > 0:
+        playlist = _playlist.lists(int(now_page))
         keyboard_markup = InlineKeyboardMarkup()
         n = 1
         row_btns = []
@@ -38,9 +36,10 @@ async def __search_music(query: CallbackQuery):
                 '⬅', callback_data=f'playlist_prev{prev_page}'))
         keyboard_markup.insert(
             InlineKeyboardButton('❌', callback_data='delete'))
-        if 10 < result_count and result_count > int(now_page) * 10:
+        if 10 < playlist_count and playlist_count > int(now_page) * 10:
             keyboard_markup.insert(InlineKeyboardButton(
                 '➡', callback_data=f'playlist_next{next_page}'))
         await query.message.edit_text(send_text,
                                       reply_markup=keyboard_markup)
-#
+    else:
+        print(playlist_count)
