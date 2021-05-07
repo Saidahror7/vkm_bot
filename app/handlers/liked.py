@@ -1,3 +1,4 @@
+from app.models.Database import Playlist
 from re import sub
 
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup, InlineKeyboardButton
@@ -22,26 +23,31 @@ async def _playlist(query: CallbackQuery):
 @dp.message_handler(commands=['my'])
 async def _playlists(message: Message):
     now_page = 1
-    playlist = Playlists(message.from_user.id).lists(now_page)
 
-    if len(playlist) > 0:
+    _playlist = Playlists(message.from_user.id)
+    playlist_count = _playlist.lists_count()
+    if playlist_count > 0:
+        playlist = _playlist.lists(now_page)
         send_text = ""
         keyboard_markup = InlineKeyboardMarkup()
         row_btns = []
         n = 1
         for music_ in playlist:
             row_btns.append(
-                InlineKeyboardButton(f"{n}", callback_data=f"music{music_.music_id}")
+                InlineKeyboardButton(
+                    f"{n}", callback_data=f"music{music_.music_id}")
             )
-            title = sub('(\(@[A-Z_a-z0-9]+\))|(@[A-Z_a-z0-9]+)', '', music_.title)
+            title = sub(
+                '(\(@[A-Z_a-z0-9]+\))|(@[A-Z_a-z0-9]+)', '', music_.title)
             send_text += f"{hbold(n)}. {quote_html(title)}\n"
             n += 1
         for i in list(split_list(row_btns)):
             keyboard_markup.row(*i)
 
         keyboard_markup.row(InlineKeyboardButton('❌', callback_data='delete'))
-        if len(playlist) > 10:
-            keyboard_markup.insert(InlineKeyboardButton('➡', callback_data='playlist_next2'))
+        if playlist_count > 10:
+            keyboard_markup.insert(
+                InlineKeyboardButton('➡', callback_data='playlist_next2'))
         await message.reply(send_text, reply_markup=keyboard_markup)
     else:
         await message.reply("Hech narsa topilmadi 😔")
