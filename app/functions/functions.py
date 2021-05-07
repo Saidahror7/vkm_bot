@@ -9,8 +9,12 @@ class Playlists:
     def lists(self, limit):
         return [i for i in Playlist.select().where(Playlist.user_id == self.user_id).paginate(limit, 10)]
 
+    def lists_count(self):
+        return Playlist.select().where(Playlist.user_id == self.user_id).count()
+
     def get_lists(self) -> list:
-        music = Playlist.select().where(Playlist.user_id == self.user_id, Playlist.music_id == self.music_id)
+        music = Playlist.select().where(Playlist.user_id == self.user_id,
+                                        Playlist.music_id == self.music_id)
         musics = []
         for m in music:
             musics.append(m.id)
@@ -18,10 +22,12 @@ class Playlists:
 
     def delete_or_add(self, file_id, title):
         if len(self.get_lists()) == 0:
-            Playlist.create(music_id=self.music_id, user_id=self.user_id, title=title, file_id=file_id)
+            Playlist.create(music_id=self.music_id,
+                            user_id=self.user_id, title=title, file_id=file_id)
             return False
         else:
-            Playlist.delete().where(Playlist.user_id == self.user_id, Playlist.music_id == self.music_id).execute()
+            Playlist.delete().where(Playlist.user_id == self.user_id,
+                                    Playlist.music_id == self.music_id).execute()
             return True
 
 
