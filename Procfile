@@ -1,1 +1,1 @@
-worker: python3 -m music_izlovchi_robot
+worker: python3 __main__.py
