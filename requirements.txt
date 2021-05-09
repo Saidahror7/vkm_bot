@@ -1,2 +1,7 @@
-aiogram
-peewee
+
+pyrogram
+tgcrypto
+pytube
+sqlalchemy==1.3.20
+psycopg2
+Music-bot-python
