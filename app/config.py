@@ -1,3 +1,6 @@
-TELEGRAM_TOKEN = "1754350278:AAE8wOu684N5XlTBHTlkIegZw8QivjS_6FU"
-OWNER_ID = 1154140120  # Admin IDsi
-BOT_ID = TELEGRAM_TOKEN.split('1754350278')[0]
+import os
+API_ID = int(os.getenv("API_ID"))
+API_HASH = os.getenv("API_HASH")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+DATABASE_URL = os.getenv("DATABASE_URL")
+OWNER_ID = list({int(x) for x in os.environ.get("OWNER_ID", "").split()})
